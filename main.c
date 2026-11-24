@@ -1,97 +1,105 @@
+
 #include <stdio.h>
 #include <stdlib.h>
-struct node
-{
-    int data;
-    struct node *left;
-    struct node *right;
-};
-typedef struct node *NODE;
-NODE CreateBST(NODE root,int item)
-{
-    NODE temp,prev,cur;
-    temp=(NODE)malloc(sizeof(struct node));
-    temp->data=item;
-    temp->left=NULL;
-    temp->right=NULL;
-    if(root==NULL)
-        return temp;
-    prev=NULL;
-    cur=root;
-    while(cur!=NULL)
-    {
-        prev=cur;
-        if(item<cur->data)
-            cur=cur->left;
-        else
-            cur=cur->right;
-    }
-    if(item<prev->data)
-        prev->left=temp;
-    else
-        prev->right=temp;
-    return root;
-}
-void preorder(NODE root)
-{
-    if(root!=NULL)
-    {
-        printf("%d\t",root->data);
-        preorder(root->left);
-        preorder(root->right);
-    }
-}
-void inorder(NODE root)
-{
-    if(root!=NULL)
-    {
-        inorder(root->left);
-        printf("%d\t",root->data);
-        inorder(root->right);
-    }
-}
-void postorder(NODE root)
-{
-    if(root!=NULL)
-    {
-        postorder(root->left);
-        postorder(root->right);
-        printf("%d\t",root->data);
-    }
-}
 
+void heapify(int a[10], int n)
+{
+    int i, k, v, j, flag;
+
+    for (i = n / 2; i >= 1; i--)
+    {
+        k = i;
+        v = a[k];
+        flag = 0;
+
+        while (!flag && 2 * k <= n)
+        {
+            j = 2 * k;
+
+            if (j < n && a[j] < a[j + 1])
+                j = j + 1;
+
+            if (v >= a[j])
+                flag = 1;
+            else
+            {
+                a[k] = a[j];
+                k = j;
+            }
+        }
+
+        a[k] = v;
+    }
+}
 
 int main()
 {
-   NODE root=NULL;
-   int ch,item;
-   for(;;)
-   {
-    printf("\n 1.insert");
-    printf("\n 2.preorder");
-    printf("\n 3.inorder");
-    printf("\n 4.postorder");
-    printf("\n 5.Exit");
-    printf("\n read choice:");
-   scanf("%d",&ch);
-   switch(ch)
-   {
-       case 1: printf("\n read element to be inserted:");
-       scanf("%d", &item);
-       root=CreateBST(root,item);
-       break;
-       case 2: printf("\n preorder traversal is \n");
-       preorder(root);
-       break;
-       case 3: printf("\n inorder traversal is \n");
-       inorder(root);
-       break;
-       case 4:printf("\n postorder traversal is \n");
-       postorder(root);
-       break;
-       default:exit(0);
-   }
-   }
+    int n = 0, a[10], i, ch;
+
+    for (;;)
+    {
+        printf("\n1. Create heap");
+        printf("\n2. Extract max");
+        printf("\n3. Exit");
+        printf("\nRead choice: ");
+        scanf("%d", &ch);
+
+        switch (ch)
+        {
+            case 1:
+                printf("\nRead number of elements: ");
+                scanf("%d", &n);
+
+                if (n < 1 || n > 9)
+                {
+                    printf("\nInvalid number of elements");
+                    n = 0;
+                    break;
+                }
+
+                printf("\nRead elements:\n");
+
+                for (i = 1; i <= n; i++)
+                    scanf("%d", &a[i]);
+
+                heapify(a, n);
+
+                printf("\nElements after constructing heap:\n");
+
+                for (i = 1; i <= n; i++)
+                    printf("%d\t", a[i]);
+
+                break;
+
+            case 2:
+                if (n >= 1)
+                {
+                    printf("\nElement deleted is %d", a[1]);
+
+                    a[1] = a[n];
+                    n--;
+
+                    heapify(a, n);
+
+                    printf("\nHeap after deletion:\n");
+
+                    for (i = 1; i <= n; i++)
+                        printf("%d\t", a[i]);
+                }
+                else
+                {
+                    printf("\nNo elements to delete");
+                }
+
+                break;
+
+            case 3:
+                exit(0);
+
+            default:
+                printf("\nInvalid choice");
+        }
+    }
+
     return 0;
 }
-
